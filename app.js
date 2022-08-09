@@ -77,6 +77,40 @@ function animate() {
     particlesArray[i].update();
   }
 
+  connect();
+
   requestAnimationFrame(animate);
 }
 animate();
+
+function connect() {
+  for (let i = 0; i < particlesArray.length; i++) {
+    for (let j = i + 1; j < particlesArray.length; j++) {
+      const squaredDistanceX =
+        (particlesArray[i].x - particlesArray[j].x) *
+        (particlesArray[i].x - particlesArray[j].x);
+      const squaredDistanceY =
+        (particlesArray[i].y - particlesArray[j].y) *
+        (particlesArray[i].y - particlesArray[j].y);
+
+      const hypotenuse = squaredDistanceX + squaredDistanceY;
+
+      if (hypotenuse < 135 * 135) {
+        ctx.strokeStyle = `rgba(240,240,240, ${1 - hypotenuse / (135 * 135)})`;
+        ctx.lineWidth = 0.4;
+        ctx.beginPath();
+        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+window.addEventListener('resize', handleResize);
+
+function handleResize() {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+  init();
+}
